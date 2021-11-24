@@ -6,6 +6,8 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
@@ -28,9 +30,10 @@ import uk.bluelightworkbench.chatbot.model.Holiday;
 @Service
 public class ChatbotService {
 	
-	public List<Holiday> findHolidays() throws IOException {
+	public List<Holiday> findHolidays(String continent, Integer starRating, String tempRating) 
+		throws IOException { 
 		
-		List<Holiday> holidayList = new ArrayList<Holiday>();
+		var holidayList = new ArrayList<Holiday>();
 		Iterable<CSVRecord> records;
 		
 		try {
@@ -45,19 +48,37 @@ public class ChatbotService {
 		ObjectMapper objectMapper = new ObjectMapper();
 		
 		for (CSVRecord record : records) {
-			HashMap holidayLookup = new HashMap();
+			var holidayLookup = new HashMap();
 			
 			record.putIn(holidayLookup);
 			
 			try {
 			
-			Holiday mappedHoliday = objectMapper.convertValue(holidayLookup, Holiday.class);
+			var mappedHoliday = objectMapper.convertValue(holidayLookup, Holiday.class);
 			
 			holidayList.add(mappedHoliday);
 			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
+				throw e;
 			}
-		};
+		}
+		
+		
+		
+//		if (continent != null && starRating != null && tempRating != null) {
+//			
+//			var streamedList = holidayList.stream()
+//			.filter(holiday -> 
+//			 holiday.getContinent() == continent && 
+//			 holiday.getStarRating() == starRating && 
+//			 holiday.getTempRating() == tempRating)
+//			.collect(Collectors.toList());
+//			
+//			System.out.println(streamedList);
+//		
+//			holidayList = (ArrayList<Holiday>) streamedList;
+//			
+//		};
+			
 		
 		return holidayList;
 	}
