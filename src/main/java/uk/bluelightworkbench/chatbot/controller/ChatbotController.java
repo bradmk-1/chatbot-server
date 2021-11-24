@@ -35,8 +35,7 @@ public class ChatbotController {
 		return "Chatbot is up and running!";
 	}
 	
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@GetMapping("/chatbot/findHolidays")
+	@GetMapping(path = { "/chatbot/findHolidays" }, produces = APPLICATION_JSON_VALUE)
 	public List<Holiday> getHolidays() throws IOException {
 		return chatbotService.findHolidays();
 	}

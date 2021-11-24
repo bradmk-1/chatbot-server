@@ -31,24 +31,33 @@ public class ChatbotService {
 	public List<Holiday> findHolidays() throws IOException {
 		
 		List<Holiday> holidayList = new ArrayList<Holiday>();
-		HashMap holidayLookup = new HashMap();
+		Iterable<CSVRecord> records;
+		
+		try {
 		
 		Reader holidayData = new FileReader("src/main/resources/data.csv");
-		Iterable<CSVRecord> records = CSVFormat.EXCEL.withFirstRecordAsHeader().parse(holidayData);
+		records = CSVFormat.EXCEL.withFirstRecordAsHeader().parse(holidayData);
+		
+		} catch (IOException e) {
+			throw e;
+		};
 		
 		ObjectMapper objectMapper = new ObjectMapper();
 		
 		for (CSVRecord record : records) {
+			HashMap holidayLookup = new HashMap();
+			
 			record.putIn(holidayLookup);
+			
+			try {
 			
 			Holiday mappedHoliday = objectMapper.convertValue(holidayLookup, Holiday.class);
 			
 			holidayList.add(mappedHoliday);
+			} catch (IllegalArgumentException e) {
+				e.printStackTrace();
+			}
 		};
-		
-		System.out.println(holidayLookup);
-		
-		//Map holidays to list, filter holiday list based on json sent to us.
 		
 		return holidayList;
 	}
