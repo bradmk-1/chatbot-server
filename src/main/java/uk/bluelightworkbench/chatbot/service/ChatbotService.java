@@ -33,6 +33,10 @@ public class ChatbotService {
 	public List<Holiday> findHolidays(String continent, Integer starRating, String tempRating) 
 		throws IOException { 
 		
+		Optional<String> checkedContinent = Optional.of(continent);
+		Optional<Integer> checkedStarRating = Optional.of(starRating); 
+		Optional<String> checkedTempRating = Optional.of(tempRating); 
+		
 		var holidayList = new ArrayList<Holiday>();
 		Iterable<CSVRecord> records;
 		
@@ -62,22 +66,20 @@ public class ChatbotService {
 			}
 		}
 		
+		if (checkedContinent.isPresent() && checkedStarRating.isPresent() && checkedTempRating.isPresent()) {
+			
+			var streamedList = holidayList.stream()
+			.filter(holiday -> 
+			 holiday.getContinent() == continent && 
+			 holiday.getStarRating() == starRating && 
+			 holiday.getTempRating() == tempRating)
+			.collect(Collectors.toList());
+			
+			System.out.println(streamedList);
 		
-		
-//		if (continent != null && starRating != null && tempRating != null) {
-//			
-//			var streamedList = holidayList.stream()
-//			.filter(holiday -> 
-//			 holiday.getContinent() == continent && 
-//			 holiday.getStarRating() == starRating && 
-//			 holiday.getTempRating() == tempRating)
-//			.collect(Collectors.toList());
-//			
-//			System.out.println(streamedList);
-//		
-//			holidayList = (ArrayList<Holiday>) streamedList;
-//			
-//		};
+			holidayList = (ArrayList<Holiday>) streamedList;
+			
+		};
 			
 		
 		return holidayList;

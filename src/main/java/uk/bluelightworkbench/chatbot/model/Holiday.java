@@ -44,7 +44,7 @@ public class Holiday {
 	private String category;
 	
 	@JsonProperty("StarRating")
-	private int starRating;
+	private Integer starRating;
 	
 	@JsonProperty("TempRating")
 	private String tempRating;
